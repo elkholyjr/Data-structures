@@ -1,0 +1,78 @@
+template<class T>
+class Vector{
+private:
+    int size,cnt;
+    T*arr;
+public:
+    Vector(){
+        size=5,cnt=0;
+        arr=new T[size];
+    }
+
+    int length(){
+        return cnt;
+    }
+
+    void append(T val){
+        if(cnt==size){
+            Expand();
+        }
+        arr[cnt]=val;
+        cnt++;
+    }
+
+    T at(int pos){
+        if(pos>=cnt){
+            throw invalid_argument("Error too far from your size");
+        }else{
+            return arr[pos];
+        }
+    }
+
+    void DeleteAt(int pos){
+        if(pos>=cnt){
+            throw invalid_argument("Error too far from your size");
+        }else{
+            for(int i=pos;i<cnt-1;i++){
+                arr[i]=arr[i+1];
+            }
+            cnt--;
+        }
+    }
+
+    void InsertAt(int pos,T val){
+        if(pos>=cnt){
+            throw invalid_argument("Error too far from your size");
+        }else{
+            if(cnt==size){
+                Expand();
+            }
+            for(int i=cnt;i>pos;i--){
+                arr[i]=arr[i-1];
+            }
+            arr[pos]=val;
+            cnt++;
+        }
+    }
+
+    void clear(){
+        delete [] arr;
+        size=5;
+        arr=new T[size];
+        cnt=0;
+    }
+
+    void Expand(){
+        size*=2;
+        T*temp=new T[size];
+        for(int i=0;i<cnt;i++){
+            temp[i]=arr[i];
+        }
+        delete[] arr;
+        arr=temp;
+    }
+
+    ~Vector(){
+        delete[] arr;
+    }
+};
