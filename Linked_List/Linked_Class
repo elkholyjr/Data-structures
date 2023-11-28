@@ -1,0 +1,117 @@
+template <class T>
+class Node{
+protected:
+    T value;
+    Node<T>*next;
+public:
+    Node(){
+        value=0;
+        next= nullptr;
+    }
+
+    Node(T val){
+        value=val;
+        next= nullptr;
+    }
+};
+
+template<class T>
+class LinkedList{
+protected:
+    int count=0;
+    Node<T>*head,*tail;
+public:
+    LinkedList(){
+        count=0;
+        head=tail= nullptr;
+    }
+
+    int length(){
+        return count;
+    }
+
+    void append(T val){
+        Node<T> *newNode= new Node<T>(val);
+        if(head==0){
+            head=tail=newNode;
+        }else{
+            tail->next=newNode;
+            tail=newNode;
+        }
+        count++;
+    }
+
+    T at(int pos){
+        if(pos<0 || pos>=count){
+            throw invalid_argument("Error");
+        }else{
+            Node<T>* temp=head;
+            for(int i=0;i<pos;i++){
+                temp=temp->next;
+            }
+            return temp->value;
+        }
+    }
+
+    void DeleteAt(int pos){
+        if(pos<0 || pos>=count){
+            throw invalid_argument("Error");
+        }else{
+            Node<T>* temp=head;
+            if(pos==0){
+                head=head->next;
+                delete temp;
+            }else{
+                for(int i=0;i<pos-1;i++){
+                    temp=temp->next;
+                }
+                Node<T>* del=temp->next;
+                temp->next=del->next;
+                delete del;
+                if(pos==count-1){
+                    tail=temp;
+                }
+            }
+            count--;
+        }
+    }
+
+    void InsertAt(int pos, T val){
+        if(pos<0 || pos>=count){
+            throw invalid_argument("Error");
+        }else{
+            Node<T>*temp=head;
+            Node<T>*newNode=new Node<T>(val);
+            if(pos==0){
+                newNode->next=head;
+                head=newNode;
+            }else{
+                for(int i=0;i<pos-1;i++){
+                    temp=temp->next;
+                }
+                newNode->next=temp->next;
+                temp->next=newNode;
+            }
+            count++;
+        }
+    }
+
+    void clear(){
+        if(count==0){
+            return;
+        }
+        Node<T>* temp=head->next;
+        while(temp->next!=0){
+            delete head;
+            head=temp;
+            temp=temp->next;
+        }
+        delete head;
+        head=tail=0;
+        count=0;
+    }
+
+    ~LinkedList(){
+        clear();
+    }
+};
