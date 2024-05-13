@@ -94,33 +94,51 @@ class AVL {
         }
         return current;
     }
-    Node *deleteRec(Node *root, T key) {
-        if (root == nullptr) {
-            return root;
-        }
-        if (key < root->data) {
-            root->left = deleteRec(root->left, key);
-            root->height = max(NodeHeight(root->left), NodeHeight(root->right)) + 1;
-        } else if (key > root->data) {
-            root->right = deleteRec(root->right, key);
-            root->height = max(NodeHeight(root->left), NodeHeight(root->right)) + 1;
-        } else {
-            if (root->left == nullptr) {
-                Node *temp = root->right;
-                delete root;
-                return temp;
-            } else if (root->right == nullptr) {
-                Node *temp = root->left;
-                delete root;
-                return temp;
-            }
-            Node *temp = minValueNode(root->right);
-            root->data = temp->data;
-            root->right = deleteRec(root->right, temp->data);
-            root->height = max(NodeHeight(root->left), NodeHeight(root->right)) + 1;
-        }
+Node *deleteRec(Node *root, Node *nodeToDelete) {
+    if (root == nullptr || nodeToDelete == nullptr) {
         return root;
     }
+    
+    if (nodeToDelete->data < root->data) {
+        root->left = deleteRec(root->left, nodeToDelete);
+    } else if (nodeToDelete->data > root->data) {
+        root->right = deleteRec(root->right, nodeToDelete);
+    } else {
+        if (root->left == nullptr) {
+            Node *temp = root->right;
+            delete root;
+            return temp;
+        } else if (root->right == nullptr) {
+            Node *temp = root->left;
+            delete root;
+            return temp;
+        }
+        Node *temp = minValueNode(root->right);
+        root->data = temp->data;
+        root->right = deleteRec(root->right, temp);
+    }
+
+    // Update height
+    root->height = 1 + max(NodeHeight(root->left), NodeHeight(root->right));
+
+    // Rebalance the tree
+    int balance = getBalance(root);
+    if (balance > 1 && getBalance(root->left) >= 0) {
+        return rightRotate(root);
+    }
+    if (balance > 1 && getBalance(root->left) < 0) {
+        root->left = leftRotate(root->left);
+        return rightRotate(root);
+    }
+    if (balance < -1 && getBalance(root->right) <= 0) {
+        return leftRotate(root);
+    }
+    if (balance < -1 && getBalance(root->right) > 0) {
+        root->right = rightRotate(root->right);
+        return leftRotate(root);
+    }
+    return root;
+}
     void inorderRec(Node *root, vector<T> &arr) {
         if (root != nullptr) {
             inorderRec(root->left, arr);
