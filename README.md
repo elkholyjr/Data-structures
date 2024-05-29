@@ -1,2 +1,2 @@
 # implementations
-this folder contains a diffrent implementations of stls in c++ using oop
+this folder contains a diffrent data structures implementations  in c++ 
